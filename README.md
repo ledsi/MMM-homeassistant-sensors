@@ -6,7 +6,7 @@ It can display information from [Home Assistant](https://home-assistant.io/) usi
 ## Installation
 
 Navigate into your MagicMirror's `modules` folder and clone this repository:
-`cd ~/MagicMirror/modules && git clone https://github.com/leinich/MMM-homeassistant-sensors.git`
+`cd ~/MagicMirror/modules && git clone https://github.com/ledsi/MMM-homeassistant-sensors.git`
 
 If you want to use icons for the sensors download the `MaterialDesignIcons` webfont from https://github.com/Templarian/MaterialDesign-Webfont/archive/master.zip and unzip the folder:
 `cd ~/MagicMirror/modules/MMM-homeassistant-sensors && wget https://github.com/Templarian/MaterialDesign-Webfont/archive/master.zip && unzip master.zip`
