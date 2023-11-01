@@ -14,7 +14,7 @@ Module.register("MMM-homeassistant-sensors", {
     updateInterval: 300000,
     displaySymbol: true,
     debuglogging: false,
-    values: []
+    values: [],
   },
 
   getStyles: function() {
@@ -50,7 +50,7 @@ Module.register("MMM-homeassistant-sensors", {
       var values = this.config.values;
       if (values.length > 0) {
         for (var i = 0; i < values.length; i++) {
-          var icons = values[i].icons[0];
+          var icons = values[i]?.icons?.length ? values[i].icons[0] : [];
           var sensor = values[i].sensor;
           var attributes = values[i].attributes;
           var val = this.getValue(data, sensor, attributes);
@@ -167,10 +167,11 @@ Module.register("MMM-homeassistant-sensors", {
           iconsinline = document.createElement("i");
           iconsinline.className = "mdi mdi-" + icons.state_open;
           newCell.appendChild(iconsinline);
-        } else if (
-          value == "closed" &&
-          typeof icons.state_closed === "string"
-        ) {
+        } else if (value == "unavailable" && typeof icons.state_unavailable === "string") {
+          iconsinline = document.createElement("i");
+          iconsinline.className = "mdi mdi-" + icons.state_unavailable;
+          newCell.appendChild(iconsinline);
+        } else if ( value == "closed" && typeof icons.state_closed === "string" ) {
           iconsinline = document.createElement("i");
           iconsinline.className = "mdi mdi-" + icons.state_closed;
           newCell.appendChild(iconsinline);
@@ -189,8 +190,8 @@ Module.register("MMM-homeassistant-sensors", {
     newCell.appendChild(newText);
     // Value
     newCell = newrow.insertCell(2);
-    newCell.className = "align-right";
-    newText = document.createTextNode(value);
+    newCell.className = "align-right value-" + value.toLowerCase();
+    newText = document.createTextNode(value != "unavailable" ? value : "");
     newCell.appendChild(newText);
     // Unit
     newCell = newrow.insertCell(3);
