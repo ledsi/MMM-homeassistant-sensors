@@ -51,6 +51,7 @@ Module.register("MMM-homeassistant-sensors", {
       if (values.length > 0) {
         for (var i = 0; i < values.length; i++) {
           var icons = values[i]?.icons?.length ? values[i].icons[0] : [];
+          var labels = values[i]?.labels?.length ? values[i].labels[0] : [];
           var sensor = values[i].sensor;
           var attributes = values[i].attributes;
           var val = this.getValue(data, sensor, attributes);
@@ -59,7 +60,7 @@ Module.register("MMM-homeassistant-sensors", {
           var alertThreshold = values[i].alertThreshold;
           if (val) {
             tableElement.appendChild(
-              this.addValue(name, val, unit, icons, alertThreshold)
+              this.addValue(name, val, unit, icons, labels, alertThreshold)
             );
           }
         }
@@ -125,7 +126,7 @@ Module.register("MMM-homeassistant-sensors", {
     }
     return null;
   },
-  addValue: function(name, value, unit, icons, alertThreshold) {
+  addValue: function(name, value, unit, icons, labels, alertThreshold) {
     var newrow, newText, newCell;
     newrow = document.createElement("tr");
     if (!isNaN(alertThreshold)) {
@@ -191,7 +192,28 @@ Module.register("MMM-homeassistant-sensors", {
     // Value
     newCell = newrow.insertCell(2);
     newCell.className = "align-right value-" + value.toLowerCase();
-    newText = document.createTextNode(value != "unavailable" ? value : "");
+
+    // overwrite labels
+    var label = value;
+    if (typeof labels === "object") {
+      if (value == "on" && typeof labels.state_on === "string") {
+        label = labels.state_on;
+      } 
+      else if (value == "off" && typeof labels.state_off === "string") {
+        label = labels.state_off;
+      }
+      else if (value == "open" && typeof labels.state_open === "string") {
+        label = labels.state_open;
+      }
+      else if (value == "closed" && typeof labels.state_closed === "string") {
+        label = labels.state_closed;
+      }
+      else if (value == "unavailable" && typeof labels.state_unavailable === "string") {
+        label = labels.state_unavailable;
+      }
+    }
+    newText = document.createTextNode(label);
+    // newText = document.createTextNode(value != "unavailable" ? value : "");
     newCell.appendChild(newText);
     // Unit
     newCell = newrow.insertCell(3);
