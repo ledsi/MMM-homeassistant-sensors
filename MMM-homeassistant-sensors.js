@@ -57,10 +57,15 @@ Module.register("MMM-homeassistant-sensors", {
           var val = this.getValue(data, sensor, attributes);
           var name = this.getName(data, values[i]);
           var unit = this.getUnit(data, sensor);
+          var climatePreset = this.getPreset(data, sensor, attributes);
           var alertThreshold = values[i].alertThreshold;
+          if(sensor.startsWith('climate.'))  {
+            unit = '°C';
+          }
+          
           if (val) {
             tableElement.appendChild(
-              this.addValue(name, val, unit, icons, labels, alertThreshold)
+              this.addValue(name, val, unit, icons, labels, climatePreset, alertThreshold)
             );
           }
         }
@@ -84,6 +89,11 @@ Module.register("MMM-homeassistant-sensors", {
   getValue: function(data, value, attributes=[]) {
     for (var i = 0; i < data.length; i++) {
       if (data[i].entity_id == value) {
+        if( value.startsWith('climate.') ) {
+          // console.warn(value);
+          // console.warn(data[i]);
+          return String(data[i].attributes.current_temperature);
+        }
         if(attributes.length==0) {
           return data[i].state;
         }
@@ -98,6 +108,17 @@ Module.register("MMM-homeassistant-sensors", {
           }
         }
         return returnString.slice(0, -3);
+      }
+    }
+    return null;
+  },
+  getPreset: function(data, value, attributes=[]) {
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].entity_id == value) {
+        if( value.startsWith('climate.') ) {
+          // console.warn("preset_mode",data[i].attributes.preset_mode);
+          return String(data[i].attributes.preset_mode);
+        }
       }
     }
     return null;
@@ -126,9 +147,10 @@ Module.register("MMM-homeassistant-sensors", {
     }
     return null;
   },
-  addValue: function(name, value, unit, icons, labels, alertThreshold) {
+  addValue: function(name, value, unit, icons, labels, climatePreset, alertThreshold) {
     var newrow, newText, newCell;
     newrow = document.createElement("tr");
+    newrow.className =  "value-" + value.toLowerCase() + " " + (climatePreset ? "climate-" + climatePreset : "");
     if (!isNaN(alertThreshold)) {
       console.log("alertThreshold is a number");
       if (alertThreshold < value) {
