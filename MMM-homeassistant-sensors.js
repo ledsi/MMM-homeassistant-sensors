@@ -11,7 +11,7 @@ Module.register("MMM-homeassistant-sensors", {
     https: false,
     token: "",
     apipassword: "",
-    updateInterval: 300000,
+    updateInterval: 1 * 60 * 1000,
     displaySymbol: true,
     debuglogging: false,
     values: [],
