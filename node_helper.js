@@ -37,7 +37,7 @@ module.exports = NodeHelper.create({
 				console.log('MMM-homeassistant-sensors statusCode:', response.statusCode);
 			}
 		} catch (error) {
-			console.log('MMM-homeassistant-sensors - Connection Failed: ' + error.response.body);
+			console.log('MMM-homeassistant-sensors - Connection Failed: ' + error.response?.body);
 		}
 	})();
 
